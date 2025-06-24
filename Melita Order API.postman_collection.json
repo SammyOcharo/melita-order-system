@@ -1,0 +1,126 @@
+{
+	"info": {
+		"_postman_id": "c4fb101e-1d7c-4621-ba0c-5a8a854e263f",
+		"name": "Melita Order API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22943149",
+		"_collection_link": "https://lunar-resonance-504738.postman.co/workspace/ebishara-dev-api-collection~22a2cf39-48d7-4e73-8bf0-51b3770933e0/collection/22943149-c4fb101e-1d7c-4621-ba0c-5a8a854e263f?action=share&source=collection_link&creator=22943149"
+	},
+	"item": [
+		{
+			"name": "Request Auth token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let json = pm.response.json();",
+							"pm.environment.set(\"access_token\", json.access_token);",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"packages": {},
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "secret",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "oidc-client",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{BASE_URL}}:8082/oauth2/token",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"port": "8082",
+					"path": [
+						"oauth2",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create-order",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "orderIdempotency-Key",
+						"value": "YEDN-IJWD7-SIDMC",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"customerName\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"+254712345678\",\n  \"installationAddress\": \"123 Juja Street, Nairobi\",\n  \"preferredDate\": \"2025-06-26\",\n  \"preferredTimeSlot\": \"10:00 AM - 12:00 PM\",\n  \"products\": [\n    {\n      \"productType\": \"INTERNET\",\n      \"packageName\": \"Internet 270Mbps\"\n    }\n  ]\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8085/api/v1/orders/create-order",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8085",
+					"path": [
+						"api",
+						"v1",
+						"orders",
+						"create-order"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
