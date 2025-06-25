@@ -1,5 +1,6 @@
 package com.melita.order_api_service.controller;
 
+import com.melita.order_api_service.dao.OrderResponse;
 import com.melita.order_api_service.dto.CreateOrderRequest;
 import com.melita.order_api_service.service.OrderService;
 import jakarta.validation.Valid;
@@ -18,9 +19,14 @@ public class OrderController {
     }
 
     @PostMapping("/create-order")
-    public ResponseEntity<String> createOrder(@Valid @RequestBody CreateOrderRequest request,
+    public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest request,
                                               @RequestHeader("orderIdempotency-Key") String orderIdempotencyKey) {
-        orderService.createOrder(request, orderIdempotencyKey);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Order accepted.");
+        ;
+        return ResponseEntity.ok(orderService.createOrder(request, orderIdempotencyKey));
+    }
+
+    @GetMapping("/{orderNo}")
+    public  ResponseEntity<OrderResponse> getOrder(@PathVariable String orderNo){
+        return ResponseEntity.ok(orderService.getOrder(orderNo));
     }
 }

@@ -1,9 +1,11 @@
 package com.melita.order_api_service.entity;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,7 +21,9 @@ import java.util.UUID;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "CHAR(36)")
     private UUID id;
+    private String orderNo;
     private String customerName;
     private String email;
     private String phone;

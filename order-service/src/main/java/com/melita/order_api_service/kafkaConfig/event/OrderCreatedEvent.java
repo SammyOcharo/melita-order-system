@@ -12,6 +12,7 @@ public class OrderCreatedEvent {
     private String email;
     private LocalDate preferredDate;
     private String timeSlot;
+    private String status;
     private List<OrderItemEvent> items;
 
     private String eventVersion = "v1";

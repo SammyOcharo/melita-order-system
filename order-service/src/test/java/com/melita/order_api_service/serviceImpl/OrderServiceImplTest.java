@@ -2,9 +2,12 @@ package com.melita.order_api_service.serviceImpl;
 
 import com.melita.order_api_service.Exceptions.CustomExceptions.DuplicateRequestException;
 import com.melita.order_api_service.TestData;
+import com.melita.order_api_service.dao.OrderResponse;
 import com.melita.order_api_service.dto.CreateOrderRequest;
 import com.melita.order_api_service.entity.IdempotencyKey;
 import com.melita.order_api_service.entity.Order;
+import com.melita.order_api_service.entity.OrderItem;
+import com.melita.order_api_service.entity.OrderStatus;
 import com.melita.order_api_service.kafkaConfig.OrderEventPublisher;
 import com.melita.order_api_service.mapper.OrderMapper;
 import com.melita.order_api_service.repository.IdempotencyRepository;
@@ -16,6 +19,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -88,4 +93,46 @@ class OrderServiceImplTest {
 
         assertTrue(ex.getMessage().contains("Failed to create order"));
     }
+
+    @Test
+    void shouldReturnOrderResponseForExistingOrder() {
+        String orderNo = "ORD-12345";
+        Order mockOrder = new Order();
+        mockOrder.setId(UUID.randomUUID());
+        mockOrder.setOrderNo(orderNo);
+        mockOrder.setCustomerName("John");
+        mockOrder.setEmail("john@example.com");
+        mockOrder.setPhone("+254700000000");
+        mockOrder.setInstallationAddress("123 Juja");
+        mockOrder.setPreferredDate(LocalDate.now());
+        mockOrder.setPreferredTimeSlot("10:00 AM - 12:00 PM");
+        mockOrder.setStatus(OrderStatus.PENDING);
+
+        OrderItem item = new OrderItem();
+        item.setProductType("Internet");
+        item.setPackageName("250Mbps");
+        mockOrder.setOrderItems(List.of(item));
+
+        when(orderRepository.findByOrderNo(orderNo)).thenReturn(Optional.of(mockOrder));
+
+        OrderResponse response = orderService.getOrder(orderNo);
+
+        assertEquals(orderNo, response.orderNo());
+        assertEquals("John", response.customerName());
+        assertEquals(1, response.products().size());
+        assertEquals("Internet", response.products().get(0).productType());
+    }
+
+    @Test
+    void shouldThrowExceptionIfOrderNotFound() {
+        String orderNo = "ORD-NOT-EXIST";
+
+        when(orderRepository.findByOrderNo(orderNo)).thenReturn(Optional.empty());
+
+        RuntimeException ex = assertThrows(RuntimeException.class,
+                () -> orderService.getOrder(orderNo));
+
+        assertEquals("Order not found", ex.getMessage());
+    }
+
 }

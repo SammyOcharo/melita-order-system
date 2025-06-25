@@ -1,6 +1,7 @@
 package com.melita.order_api_service.Exceptions;
 
 import com.melita.order_api_service.Exceptions.CustomExceptions.DuplicateRequestException;
+import com.melita.order_api_service.Exceptions.CustomExceptions.OrderNotFoundException;
 import com.melita.order_api_service.dto.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -63,11 +64,6 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.FORBIDDEN, "Access denied: " + ex.getMessage());
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleAllOtherExceptions(Exception ex) {
-        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error: " + ex.getMessage());
-    }
-
     @ExceptionHandler(DuplicateRequestException.class)
     public ResponseEntity<ErrorResponse> handleDuplicateRequestException(DuplicateRequestException ex) {
         ErrorResponse response = new ErrorResponse(
@@ -76,5 +72,20 @@ public class GlobalExceptionHandler {
                 ex.getMessage()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleOrderNotFoundException(OrderNotFoundException ex) {
+        ErrorResponse response = new ErrorResponse(
+                400,
+                "Bad Request",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleAllOtherExceptions(Exception ex) {
+        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error: " + ex.getMessage());
     }
 }

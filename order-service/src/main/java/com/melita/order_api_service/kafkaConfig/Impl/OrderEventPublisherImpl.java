@@ -24,6 +24,7 @@ public class OrderEventPublisherImpl implements OrderEventPublisher {
         OrderCreatedEvent event = new OrderCreatedEvent();
         event.setOrderId(order.getId());
         event.setEmail(order.getEmail());
+        event.setStatus(order.getStatus().name());
         event.setPreferredDate(order.getPreferredDate());
         event.setTimeSlot(order.getPreferredTimeSlot());
 

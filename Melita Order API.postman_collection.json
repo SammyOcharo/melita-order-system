@@ -89,7 +89,7 @@
 				"header": [
 					{
 						"key": "orderIdempotency-Key",
-						"value": "YEDN-IJWD7-SIDMC",
+						"value": "YESD-IJWD7-SISMDZA",
 						"type": "text"
 					}
 				],
@@ -103,7 +103,56 @@
 					}
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8085/api/v1/orders/create-order",
+					"raw": "{{BASE_URL}}:8085/api/v1/orders/create-order",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"port": "8085",
+					"path": [
+						"api",
+						"v1",
+						"orders",
+						"create-order"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-order",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "orderIdempotency-Key",
+						"value": "YEDN-IJWD7-SIDMDY",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"customerName\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"+254712345678\",\n  \"installationAddress\": \"123 Juja Street, Nairobi\",\n  \"preferredDate\": \"2025-06-26\",\n  \"preferredTimeSlot\": \"10:00 AM - 12:00 PM\",\n  \"products\": [\n    {\n      \"productType\": \"INTERNET\",\n      \"packageName\": \"Internet 270Mbps\"\n    }\n  ]\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8085/api/v1/orders/ORD-20250625-F3E59A",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -116,7 +165,7 @@
 						"api",
 						"v1",
 						"orders",
-						"create-order"
+						"ORD-20250625-F3E59A"
 					]
 				}
 			},

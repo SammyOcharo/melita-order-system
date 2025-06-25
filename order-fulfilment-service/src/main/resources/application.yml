@@ -1,0 +1,17 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: order-fulfilment-service
+
+  config:
+    import: optional:configserver:http://localhost:8888
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: fulfilment-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer

@@ -8,6 +8,8 @@ import com.melita.order_api_service.mapper.OrderMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +22,7 @@ public class OrderMapperImpl implements OrderMapper {
         order.setCustomerName(request.getCustomerName());
         order.setEmail(request.getEmail());
         order.setPhone(request.getPhone());
+        order.setOrderNo(generateOrderNo());
         order.setInstallationAddress(request.getInstallationAddress());
         order.setPreferredDate(request.getPreferredDate());
         order.setPreferredTimeSlot(request.getPreferredTimeSlot());
@@ -37,5 +40,12 @@ public class OrderMapperImpl implements OrderMapper {
                 .collect(Collectors.toList()));
 
         return order;
+    }
+
+    public static String generateOrderNo() {
+        // Format: ORD-20250625-4F6A7C
+        String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String randomPart = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
+        return "ORD-" + date + "-" + randomPart;
     }
 }
